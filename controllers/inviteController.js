@@ -93,7 +93,7 @@ export const inviteByEmails = async (req, res, next) => {
         });
 
         // Send email
-        const joinUrl = `http://localhost:5173/join/${inviteToken}`;
+        const joinUrl = `https://splitly-phi.vercel.app/join/${inviteToken}`;
         await sendEmail({
           to: normalizedEmail,
           subject: `${inviter.name} invited you to join ${group.name} on Splitly`,
