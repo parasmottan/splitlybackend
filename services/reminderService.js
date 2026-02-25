@@ -62,7 +62,7 @@ export const triggerSmartReminders = async () => {
                   <p style="margin: 8px 0 0; color: #666;">Owed to ${creditor.name}</p>
                 </div>
                 <p>Settling up keeps everyone happy! Click below to see the details.</p>
-                <a href="http://localhost:5173/groups/${group._id}" style="display: inline-block; background: #007AFF; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">View Group</a>
+                <a href="https://splitly-phi.vercel.app/groups/${group._id}" style="display: inline-block; background: #007AFF; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">View Group</a>
               </div>
             `
           });
