@@ -100,7 +100,7 @@ export const sendManualReminder = async (req, res, next) => {
             <p style="font-size: 24px; font-weight: 700; color: #007AFF; margin: 0;">₹${amount}</p>
             <p style="margin: 8px 0 0; color: #666;">${reminderMsg}</p>
           </div>
-          <a href="http://localhost:5173/groups/${groupId}" style="display: inline-block; background: #007AFF; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">Settle Up Now</a>
+          <a href="https://splitly-phi.vercel.app/groups/${groupId}" style="display: inline-block; background: #007AFF; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">Settle Up Now</a>
           <p style="margin-top: 30px; font-size: 13px; color: #999;">Splitly: Tracking expenses so you don't have to.</p>
         </div>
       `
