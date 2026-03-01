@@ -25,7 +25,11 @@ app.use((req, res, next) => {
   next();
 });
 app.use(cors({
+<<<<<<< HEAD
   origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000', 'https://splitly-phi.vercel.app'],
+=======
+  origin: ['https://splitly-phi.vercel.app'],
+>>>>>>> 8534e8878f7c543e07bf04de5fa0c9fd94527411
   credentials: true
 }));
 app.use(express.json());
