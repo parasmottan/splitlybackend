@@ -14,6 +14,7 @@ import insightsRoutes from './routes/insightsRoutes.js';
 import otpRoutes from './routes/otpRoutes.js';
 import inviteRoutes from './routes/inviteRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
+import storyRoutes from './routes/storyRoutes.js';
 import { errorHandler } from './middleware/errorMiddleware.js';
 
 const app = express();
@@ -24,7 +25,7 @@ app.use((req, res, next) => {
   next();
 });
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:3000', 'https://splitly-phi.vercel.app'],
   credentials: true
 }));
 app.use(express.json());
@@ -40,6 +41,7 @@ app.use('/api/insights', insightsRoutes);
 app.use('/api/otp', otpRoutes);
 app.use('/api/invites', inviteRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/stories', storyRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

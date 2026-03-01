@@ -54,17 +54,17 @@ export const triggerSmartReminders = async () => {
             to: debtor.email,
             subject: `Splitly: Friendly Nudge for ${group.name} 🔔`,
             html: `
-              <div style="font-family: sans-serif; padding: 20px; color: #333;">
-                <h2>Hey ${debtor.name},</h2>
-                <p>Just a quick smart nudge from Splitly! You have an outstanding balance in <strong>${group.name}</strong>.</p>
-                <div style="background: #FFF9E6; padding: 20px; border-radius: 12px; border: 1px solid #FFEBB3; margin: 20px 0;">
-                  <p style="font-size: 24px; font-weight: 700; color: #B25E00; margin: 0;">₹${amount}</p>
-                  <p style="margin: 8px 0 0; color: #666;">Owed to ${creditor.name}</p>
-                </div>
-                <p>Settling up keeps everyone happy! Click below to see the details.</p>
-                <a href="http://localhost:5173/groups/${group._id}" style="display: inline-block; background: #007AFF; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">View Group</a>
-              </div>
-            `
+                    <div style="font-family: sans-serif; padding: 20px; color: #333;">
+                      <h2>Hey ${debtor.name},</h2>
+                      <p>Just a quick smart nudge from Splitly! You have an outstanding balance in <strong>${group.name}</strong>.</p>
+                      <div style="background: #FFF9E6; padding: 20px; border-radius: 12px; border: 1px solid #FFEBB3; margin: 20px 0;">
+                        <p style="font-size: 24px; font-weight: 700; color: #B25E00; margin: 0;">₹${amount}</p>
+                        <p style="margin: 8px 0 0; color: #666;">Owed to ${creditor.name}</p>
+                      </div>
+                      <p>Settling up keeps everyone happy! Click below to see the details.</p>
+                      <a href="http://localhost:5173/groups/${group._id}" style="display: inline-block; background: #007AFF; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">View Group</a>
+                    </div>
+                  `
           });
           nudgeCount++;
         }
