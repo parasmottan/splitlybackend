@@ -24,9 +24,14 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
     default: ''
-  }
+  },
+  notificationPrefs: {
+    expenseAlerts: { type: Boolean, default: true },
+    settlementAlerts: { type: Boolean, default: true },
+    groupInvites: { type: Boolean, default: true },
+    weeklySummary: { type: Boolean, default: false },
+  },
 }, { timestamps: true });
-
 
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();

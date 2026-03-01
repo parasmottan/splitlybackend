@@ -15,6 +15,7 @@ import otpRoutes from './routes/otpRoutes.js';
 import inviteRoutes from './routes/inviteRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
 import storyRoutes from './routes/storyRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import { errorHandler } from './middleware/errorMiddleware.js';
 
 const app = express();
@@ -42,6 +43,7 @@ app.use('/api/otp', otpRoutes);
 app.use('/api/invites', inviteRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/stories', storyRoutes);
+app.use('/api/user', userRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
