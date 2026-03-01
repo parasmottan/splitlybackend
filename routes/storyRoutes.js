@@ -1,14 +1,17 @@
 import express from 'express';
-import { getStories, createStory, deleteStory } from '../controllers/storyController.js';
+import { getStories, createStory, deleteStory, markStoryViewed } from '../controllers/storyController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// GET  /api/stories — all active stories from my group members
+// GET  /api/stories — all active stories from my group members + self
 router.get('/', protect, getStories);
 
 // POST /api/stories — post a new story
 router.post('/', protect, createStory);
+
+// PATCH /api/stories/:id/view — mark a story as viewed
+router.patch('/:id/view', protect, markStoryViewed);
 
 // DELETE /api/stories/:id — delete own story
 router.delete('/:id', protect, deleteStory);

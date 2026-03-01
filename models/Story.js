@@ -25,8 +25,14 @@ const storySchema = new mongoose.Schema({
   expiresAt: {
     type: Date,
     required: true,
-    index: { expireAfterSeconds: 0 }, // MongoDB TTL index
+    index: { expireAfterSeconds: 0 },
   },
+  viewers: [
+    {
+      user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      viewedAt: { type: Date, default: Date.now },
+    },
+  ],
 }, { timestamps: true });
 
 export default mongoose.model('Story', storySchema);

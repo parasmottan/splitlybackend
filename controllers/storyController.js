@@ -1,7 +1,7 @@
 import Story from '../models/Story.js';
 import Group from '../models/Group.js';
 
-// GET /api/stories — fetch all active stories from users in my groups
+// GET /api/stories — fetch all active stories from users in my groups (including self)
 export const getStories = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -9,7 +9,7 @@ export const getStories = async (req, res) => {
     // Find all groups the current user belongs to
     const myGroups = await Group.find({ 'members.user': userId }).select('members');
 
-    // Collect all unique member IDs (including self)
+    // Collect all unique member IDs including self
     const memberIds = new Set();
     memberIds.add(userId.toString());
     for (const group of myGroups) {
@@ -24,6 +24,7 @@ export const getStories = async (req, res) => {
       expiresAt: { $gt: new Date() },
     })
       .populate('author', 'name email')
+      .populate('viewers.user', 'name')
       .sort({ createdAt: -1 });
 
     // Group by author
@@ -44,6 +45,11 @@ export const getStories = async (req, res) => {
         fontStyle: story.fontStyle,
         createdAt: story.createdAt,
         expiresAt: story.expiresAt,
+        viewerCount: story.viewers.length,
+        // Only expose viewer names to the story author
+        viewers: story.author._id.toString() === userId.toString()
+          ? story.viewers.map(v => ({ name: v.user?.name || 'Someone', viewedAt: v.viewedAt }))
+          : [],
       });
     }
 
@@ -76,14 +82,42 @@ export const createStory = async (req, res) => {
 
     res.status(201).json({
       id: story._id,
-      userId: story.author._id,
+      userId: story.author._id.toString(),
       userName: story.author.name,
       text: story.text,
       bg: story.bg,
       fontStyle: story.fontStyle,
       createdAt: story.createdAt,
       expiresAt: story.expiresAt,
+      viewerCount: 0,
+      viewers: [],
     });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// PATCH /api/stories/:id/view — mark a story as viewed by the current user
+export const markStoryViewed = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const story = await Story.findById(req.params.id);
+
+    if (!story) return res.status(404).json({ message: 'Story not found' });
+
+    // Don't count the author viewing their own story
+    if (story.author.toString() === userId.toString()) {
+      return res.json({ message: 'Author view ignored' });
+    }
+
+    // Only add if not already viewed
+    const alreadyViewed = story.viewers.some(v => v.user.toString() === userId.toString());
+    if (!alreadyViewed) {
+      story.viewers.push({ user: userId, viewedAt: new Date() });
+      await story.save();
+    }
+
+    res.json({ viewerCount: story.viewers.length });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
