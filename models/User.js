@@ -25,6 +25,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  upiId: {
+    type: String,
+    default: '',
+    trim: true,
+  },
   notificationPrefs: {
     expenseAlerts: { type: Boolean, default: true },
     settlementAlerts: { type: Boolean, default: true },

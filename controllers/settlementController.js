@@ -1,6 +1,7 @@
 import Settlement from '../models/Settlement.js';
 import Expense from '../models/Expense.js';
 import Group from '../models/Group.js';
+import User from '../models/User.js';
 import { optimizeSettlements } from '../utils/optimizeSettlements.js';
 
 // GET /api/settlements/:groupId
@@ -55,6 +56,52 @@ export const getSettlements = async (req, res, next) => {
       pendingCount: optimized.length,
       transfers: transfersWithContext,
       currencySymbol: group.currencySymbol
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /api/settlements/:groupId/upi-details/:toUserId
+// Returns server-validated amount and receiver UPI ID for a specific transfer.
+export const getUpiPaymentDetails = async (req, res, next) => {
+  try {
+    const { groupId, toUserId } = req.params;
+    const fromUserId = req.user._id.toString();
+
+    // Verify group exists and user is a member
+    const group = await Group.findById(groupId).lean();
+    if (!group) return res.status(404).json({ message: 'Group not found' });
+
+    const isMember = group.members.some(m => m.user.toString() === fromUserId);
+    if (!isMember) return res.status(403).json({ message: 'You are not a member of this group' });
+
+    // Server-side authoritative calculation
+    const expenses = await Expense.find({ groupId }).lean();
+    const completedSettlements = await Settlement.find({ groupId, status: 'completed' }).lean();
+    const optimized = optimizeSettlements(expenses, completedSettlements);
+
+    // Find the specific transfer this user owes to toUser
+    const transfer = optimized.find(
+      t => t.from === fromUserId && t.to === toUserId
+    );
+
+    if (!transfer) {
+      return res.status(404).json({ message: 'No outstanding amount found for this transfer' });
+    }
+
+    // Fetch receiver UPI ID
+    const receiver = await User.findById(toUserId).select('name upiId').lean();
+    if (!receiver) return res.status(404).json({ message: 'Receiver not found' });
+
+    if (!receiver.upiId) {
+      return res.status(422).json({ message: `${receiver.name} hasn't set their UPI ID yet` });
+    }
+
+    res.json({
+      amount: transfer.amount,
+      upiId: receiver.upiId,
+      receiverName: receiver.name,
     });
   } catch (error) {
     next(error);

@@ -2,20 +2,23 @@ import User from '../models/User.js';
 import Group from '../models/Group.js';
 import nodemailer from 'nodemailer';
 
-// ─── PATCH /api/user/profile — update name ──────────────────────────────────
+// ─── PATCH /api/user/profile — update name + upiId ──────────────────────────
 export const updateProfile = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, upiId } = req.body;
     if (!name || !name.trim()) return res.status(400).json({ message: 'Name is required' });
+
+    const updates = { name: name.trim() };
+    if (upiId !== undefined) updates.upiId = upiId.trim();
 
     const user = await User.findByIdAndUpdate(
       req.user._id,
-      { name: name.trim() },
+      updates,
       { new: true, runValidators: true }
     );
 
     res.json({
-      user: { _id: user._id, name: user.name, email: user.email, avatar: user.avatar, notificationPrefs: user.notificationPrefs }
+      user: { _id: user._id, name: user.name, email: user.email, avatar: user.avatar, upiId: user.upiId, notificationPrefs: user.notificationPrefs }
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -93,6 +96,7 @@ export const getFullProfile = async (req, res) => {
         name: user.name,
         email: user.email,
         avatar: user.avatar,
+        upiId: user.upiId || '',
         notificationPrefs: user.notificationPrefs,
         createdAt: user.createdAt,
       }
